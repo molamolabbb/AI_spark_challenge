@@ -2,7 +2,12 @@ import os
 import json
 import csv
 from glob import glob 
+import argparse
 from calculate_score import calcuate_map
+
+parser = argparse.ArgumentParser(description='input detect labels path')
+parser.add_argument('--exp', '-e', help='exp nums')
+args = parser.parse_args()
 
 def get_bbox_format(x, y, box_w, box_h, img_w, img_h):
     x, y, box_w, box_h, img_w, img_h = map(float, (x, y, box_w, box_h, img_w, img_h))
@@ -18,16 +23,14 @@ def get_bbox_format(x, y, box_w, box_h, img_w, img_h):
     return x1, x2, y1, y2    
 
 if __name__=='__main__':
-    path = '/Users/kimjua/project/animal/result/labels/'
+    #path = '/Users/kimjua/project/animal/result/labels/'
+    path = f'/home/ec2-user/project/yolov5/runs/detect/{args.exp}/labels/'
     result_list = glob(path+'*.txt')
 
     classes = {'0':'pig', '1':'cow'}
     data = []
     for file in result_list:
-        if 'pig' in file: c = '0'
-        else: c = '1'
-        test_json_path = f'/Users/kimjua/project/animal/Test/label_{classes[c]}/'
-
+        test_json_path = '/home/ec2-user/project/yolov5/dataset/test/test_jsons/'
         result_file =  open(file, 'r') 
         image_id = file.split('/')[-1].replace('txt','jpg')
 
@@ -56,4 +59,4 @@ if __name__=='__main__':
         f.close()
         
     # calculate map score
-    calcuate_map(ans_path='answer.csv', pred_path='submit.csv')
+    calcuate_map(ans_path='/home/ec2-user/project/yolov5/dataset/test/answer.csv', pred_path='submit.csv')
